@@ -1,0 +1,32 @@
+plugins { id 'com.android.application' }
+// Sayfa APK'ya gömülür: uygulama, site yayında olmasa da kendi kopyasından açılır (bkz. Ana.ver).
+def SITE = ['index.html', 'app-icon-192.png', 'app-icon-512.png']
+def hedef = file('build/site'); hedef.mkdirs()
+SITE.each { ad -> def f = new File(hedef, ad); f.parentFile.mkdirs(); f.bytes = file("../../${ad}").bytes }
+def NO = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as int
+android {
+    namespace 'com.azat.uyanansavasci'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'com.azat.uyanansavasci'
+        minSdk 24
+        targetSdk 34
+        versionCode NO
+        versionName '1.0.' + NO
+        resValue 'string', 'app_name', 'Uyanan Savaşçı'
+    }
+    signingConfigs {
+        imza {
+            // Anahtar depoda durur: her derleme aynı imzayı taşır, yeni APK eskisinin üstüne kurulur.
+            storeFile file('../uyanansavasci.jks')
+            storePassword 'uyanansavasci'
+            keyAlias 'uyanansavasci'
+            keyPassword 'uyanansavasci'
+        }
+    }
+    buildTypes { release { minifyEnabled false; signingConfig signingConfigs.imza } }
+    buildFeatures { buildConfig true }
+    sourceSets { main.assets.srcDirs = ['build/site'] }
+    lint { checkReleaseBuilds false; abortOnError false }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}

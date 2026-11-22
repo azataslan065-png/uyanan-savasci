@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Uygulama Merkezi kurulu mu (güncelleme yalnızca oradan) -->
+    <queries>
+        <package android:name="com.azat.uygulamamerkezi" />
+        <intent><action android:name="android.intent.action.VIEW" /><data android:scheme="uygulamamerkezi" /></intent>
+    </queries>
   <application android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:theme="@style/Tema"
       android:hardwareAccelerated="true" android:usesCleartextTraffic="false" android:allowBackup="false">
     <activity android:name=".Ana" android:exported="true" android:launchMode="singleTask"
